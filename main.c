@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include "discord.h"
 
 int main() {
-	printf("hello world!\n");
+	do_thin(); // among 
 	return 0;
 }

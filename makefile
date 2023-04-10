@@ -1,7 +1,8 @@
 all: build
 
-build:
-	@echo building...
+
+build: main.c include/*
+	@echo building discord rpc...
 
 	if [ ! -d "build" ]; then \
 		mkdir build; \
@@ -13,5 +14,11 @@ build:
 
 clean:
 	rm -rf build
+	cd raylib/src/ && \
+	make clean
+
+run: build
+	./build/discord
 
 .PHONY: all clean
+
