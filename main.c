@@ -2,6 +2,6 @@
 #include "discord.h"
 
 int main() {
-	do_thin(); // among 
+	printf("discord path: %s\r\n", get_temp_path());
 	return 0;
 }
