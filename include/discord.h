@@ -13,6 +13,24 @@ typedef struct {
 	bool open;
 } BaseConnection;
 
+typedef struct {
+    const char* state;   // max 128 bytes
+    const char* details; // max 128 bytes
+    int64_t startTimestamp;
+    int64_t endTimestamp;
+    const char* largeImageKey;  // max 32 bytes
+    const char* largeImageText; // max 128 bytes
+    const char* smallImageKey;  // max 32 bytes
+    const char* smallImageText; // max 128 bytes
+    int8_t instance;
+} DiscordRichPresence;
+
+typedef struct {
+	void (*ready)();
+	void (*disconnected)(int errorCode, const char* message);
+	void (*errored)(int errorCode, const char* message);
+} DiscordEventHandlers;
+
 static const char* get_temp_path() {
 	const char* temp = getenv("XDG_RUNTIME_DIR");
 	temp = temp ? temp : getenv("TMP");
@@ -51,6 +69,7 @@ bool connection_write(BaseConnection* connection, const void* data, size_t len) 
 	ssize_t sent_bytes = send(connection->sock, data, len, 0);
 
 	if (sent_bytes < 0) {
+		exit(1);
 		// TODO freak out!!11! (mark closed)
 	}
 

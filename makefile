@@ -8,7 +8,7 @@ build: main.c include/*
 		mkdir build; \
 	fi
 
-	gcc -Wall -Iinclude main.c -o build/discord -lm
+	gcc -Wall -g3 -O0 -Iinclude main.c -o build/discord -lm
 
 	@echo done!
 
