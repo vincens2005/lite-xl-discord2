@@ -48,7 +48,7 @@ static int f_send(lua_State* L) {
 	return 1;
 }
 
-static int f_listen(lua_State *L) {
+static int f_listen(lua_State* L) {
 	MessageFrame read_frame;
 	bool success = listen_to_discord(&read_frame);
 	if (!success) {
@@ -59,10 +59,16 @@ static int f_listen(lua_State *L) {
 	return 1;
 }
 
+static int f_clear(lua_State* L) {
+	connection = (BaseConnection) {0};
+	return 0;
+}
+
 static const struct luaL_Reg lib[] = {
 	{"init",     f_init},
 	{"send",   f_send},
 	{"listen",     f_listen},
+	{"clear",     f_clear},
 	{NULL, NULL}
 };
 

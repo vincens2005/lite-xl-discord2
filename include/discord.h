@@ -11,6 +11,14 @@
 
 #define MAX_FRAME_SIZE 64 * 1024
 
+typedef enum {
+	Handshake = 0,
+	Frame = 1,
+	Close = 2,
+	Ping = 3,
+	Pong = 4
+} Opcode;
+
 typedef struct {
 	struct sockaddr_un pipeaddr;
 	int sock;

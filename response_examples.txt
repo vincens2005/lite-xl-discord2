@@ -1,0 +1,41 @@
+handshake:
+{
+	"cmd": "DISPATCH",
+	"data": {
+		"v": 1,
+		"config": {
+			"cdn_host": "cdn.discordapp.com",
+			"api_endpoint": "//discord.com/api",
+			"environment": "production"
+		},
+		"user": {
+			"id": "542118336071467019",
+			"username": "thiccguy69",
+			"discriminator": "0",
+			"global_name": "ThiccGuy69",
+			"avatar": "683fedaf681bde32796cef75086b52a6",
+			"avatar_decoration_data": null,
+			"bot": false,
+			"flags": 96,
+			"premium_type": 0
+		}
+	},
+	"evt": "READY",
+	"nonce": null
+}
+
+set activity:
+{
+	"cmd": "SET_ACTIVITY",
+	"data": {
+		"state": "this is a test",
+		"details": "testing",
+		"name": "Lite XL",
+		"application_id": "749282810971291659",
+		"type": 0
+	},
+	"evt": null,
+	"nonce": 0
+}
+
+error: {"code":1003,"message":"Expected property name or '}' in JSON at position 4"}
