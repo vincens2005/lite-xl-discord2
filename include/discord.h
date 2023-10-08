@@ -4,8 +4,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdint.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+
+#define MAX_FRAME_SIZE 64 * 1024
 
 typedef struct {
 	struct sockaddr_un pipeaddr;
@@ -14,22 +18,28 @@ typedef struct {
 } BaseConnection;
 
 typedef struct {
-    const char* state;   // max 128 bytes
-    const char* details; // max 128 bytes
-    int64_t startTimestamp;
-    int64_t endTimestamp;
-    const char* largeImageKey;  // max 32 bytes
-    const char* largeImageText; // max 128 bytes
-    const char* smallImageKey;  // max 32 bytes
-    const char* smallImageText; // max 128 bytes
-    int8_t instance;
-} DiscordRichPresence;
-
-typedef struct {
 	void (*ready)();
 	void (*disconnected)(int errorCode, const char* message);
 	void (*errored)(int errorCode, const char* message);
 } DiscordEventHandlers;
+
+typedef enum {
+	Handshake = 0,
+	Frame = 1,
+	Close = 2,
+	Ping = 3,
+	Pong = 4
+} Opcode;
+
+typedef struct {
+	Opcode opcode;
+	uint32_t length;
+} MessageFrameHeader;
+
+typedef struct {
+	MessageFrameHeader header;
+	char message[MAX_FRAME_SIZE - sizeof(MessageFrameHeader)];
+} MessageFrame;
 
 static const char* get_temp_path() {
 	const char* temp = getenv("XDG_RUNTIME_DIR");

@@ -1,66 +1,83 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <unistd.h>
 #include <string.h>
-#include <signal.h>
 #include "discord.h"
 
-#define MAX_FRAME_SIZE 64 * 1024
+#define LITE_XL_PLUGIN_ENTRYPOINT
+#include "lite_xl_plugin_api.h"
 
-char status_template[] = "{"
-	"\"cmd\": \"SET_ACTIVITY\","
-	"\"args\": {"
-	"\"pid\": %d,"
-		"\"activity\": {"
-			"\"state\": \"this is a test\","
-			"\"details\": \"testing\","
-			"\"instance\": false"
-		"}"
-	"},"
-	"\"nonce\": %d"
-"}";
+BaseConnection connection;
 
-char handshake[] = "{"
-	"\"v\": 1,"
-	"\"client_id\": \"749282810971291659\""
-"}";
 
-int nonce = 0;
+bool listen_to_discord(MessageFrame* read_frame) {
+	bool read = connection_read(&connection, read_frame, sizeof(MessageFrameHeader));
 
-typedef enum {
-	Handshake = 0,
-	Frame = 1,
-	Close = 2,
-	Ping = 3,
-	Pong = 4
-} Opcode;
+	if (!read)
+		return false;
 
-typedef struct {
-	Opcode opcode;
-	uint32_t length;
-} MessageFrameHeader;
-
-typedef struct {
-	MessageFrameHeader header;
-	char message[MAX_FRAME_SIZE - sizeof(MessageFrameHeader)];
-} MessageFrame;
-
-void listen_to_discord(BaseConnection* connection) {
-	MessageFrame read_frame;
-
-	bool read = connection_read(connection, &read_frame, sizeof(MessageFrameHeader));
-	if (read_frame.header.length > 0) {
-		read = connection_read(connection, &read_frame.message, read_frame.header.length);
+	if (read_frame->header.length > 0) {
+		read = connection_read(&connection, read_frame->message, read_frame->header.length);
 	}
-	read_frame.message[read_frame.header.length] = '\0';
-	printf("discord says:\n%s\n", read_frame.message);
+
+	read_frame->message[read_frame->header.length] = '\0';
+	return read;
 }
 
 
+bool send_to_discord(int opcode, const char* message, size_t message_len) {
+	if (!connection.open)
+		return false;
 
+	MessageFrame frame = {
+		{opcode, message_len},
+	};
+
+	memcpy(frame.message, message, message_len + 1);
+
+	return connection_write(&connection, &frame, sizeof(MessageFrameHeader) + message_len);
+}
+
+static int f_init(lua_State* L) {
+	bool success = make_connection(&connection);
+	lua_pushboolean(L, success);
+	return 1;
+}
+
+static int f_send(lua_State* L) {
+	int opcode = luaL_checkinteger(L, 1);
+	size_t len;
+	const char* message = luaL_checklstring(L, 2, &len);
+	bool success = send_to_discord(opcode, message, len);
+	lua_pushboolean(L, success);
+	return 1;
+}
+
+static int f_listen(lua_State *L) {
+	MessageFrame read_frame;
+	bool success = listen_to_discord(&read_frame);
+	if (!success) {
+		lua_pushnil(L);
+		return 1;
+	}
+	lua_pushstring(L, read_frame.message);
+	return 1;
+}
+
+static const struct luaL_Reg lib[] = {
+	{"init",     f_init},
+	{"send",   f_send},
+	{"listen",     f_listen},
+	{NULL, NULL}
+};
+
+int luaopen_lite_xl_discord_socket(lua_State* L, void* XL) {
+	lite_xl_plugin_init(XL);
+	luaL_newlib(L, lib);
+	return 1;
+}
+
+/*
 int main() {
 	// sigaction(SIGPIPE, &(struct sigaction){SIG_IGN}, NULL);
-	BaseConnection connection;
+
 	make_connection(&connection);
 	printf("discord path: %s\r\n", connection.pipeaddr.sun_path);
 
@@ -96,3 +113,4 @@ int main() {
 
 	return 0;
 }
+*/
