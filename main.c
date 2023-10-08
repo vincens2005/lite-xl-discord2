@@ -60,7 +60,8 @@ static int f_listen(lua_State* L) {
 }
 
 static int f_clear(lua_State* L) {
-	connection = (BaseConnection) {0};
+	connection.open = false;
+	connection.sock = -1;
 	return 0;
 }
 

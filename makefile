@@ -8,7 +8,7 @@ build: main.c include/*
 		mkdir build; \
 	fi
 
-	gcc -Wall -O0 -g3 -Iinclude main.c -o build/discord_socket.so -shared -fPIE -fPIC -lm
+	gcc -Wall -Iinclude main.c -o build/discord_socket.so -shared -fPIE -fPIC -lm
 
 	@echo done!
 

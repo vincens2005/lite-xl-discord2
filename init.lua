@@ -216,6 +216,7 @@ function Discord:start()
 end
 
 function Discord:stop()
+    self.running = false
     discord.shutdown()
     core.log("lite-xl-discord: RPC stopped.")
 end

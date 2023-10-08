@@ -62,6 +62,7 @@ function discord.on_event(event, callback)
 end
 
 function discord.shutdown()
+	socket.send(Opcode.Close, "{}")
 	handlers = {}
 	socket.clear()
 end
