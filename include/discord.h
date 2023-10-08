@@ -18,20 +18,6 @@ typedef struct {
 } BaseConnection;
 
 typedef struct {
-	void (*ready)();
-	void (*disconnected)(int errorCode, const char* message);
-	void (*errored)(int errorCode, const char* message);
-} DiscordEventHandlers;
-
-typedef enum {
-	Handshake = 0,
-	Frame = 1,
-	Close = 2,
-	Ping = 3,
-	Pong = 4
-} Opcode;
-
-typedef struct {
 	Opcode opcode;
 	uint32_t length;
 } MessageFrameHeader;
@@ -68,7 +54,7 @@ bool make_connection(BaseConnection* connection) {
 		}
 	}
 
-	// TODO mark closed
+	connection->open = false;
 	return false;
 }
 
@@ -79,8 +65,8 @@ bool connection_write(BaseConnection* connection, const void* data, size_t len) 
 	ssize_t sent_bytes = send(connection->sock, data, len, 0);
 
 	if (sent_bytes < 0) {
-		exit(1);
-		// TODO freak out!!11! (mark closed)
+		connection->open = false;
+		return false;
 	}
 
 	return sent_bytes == (ssize_t)len;

@@ -6,7 +6,6 @@
 
 BaseConnection connection;
 
-
 bool listen_to_discord(MessageFrame* read_frame) {
 	bool read = connection_read(&connection, read_frame, sizeof(MessageFrameHeader));
 
@@ -20,7 +19,6 @@ bool listen_to_discord(MessageFrame* read_frame) {
 	read_frame->message[read_frame->header.length] = '\0';
 	return read;
 }
-
 
 bool send_to_discord(int opcode, const char* message, size_t message_len) {
 	if (!connection.open)
@@ -73,44 +71,3 @@ int luaopen_lite_xl_discord_socket(lua_State* L, void* XL) {
 	luaL_newlib(L, lib);
 	return 1;
 }
-
-/*
-int main() {
-	// sigaction(SIGPIPE, &(struct sigaction){SIG_IGN}, NULL);
-
-	make_connection(&connection);
-	printf("discord path: %s\r\n", connection.pipeaddr.sun_path);
-
-	// send the handshake
-	MessageFrame frame = {
-		{0, sizeof(handshake) - 1},
-	};
-
-	memcpy(frame.message, handshake, sizeof(handshake));
-	printf("we're saying:\n%s\n", frame.message);
-
-	connection_write(&connection, &frame, sizeof(MessageFrameHeader) + sizeof(handshake) - 1);
-	printf("we sent the handshake\n");
-	sleep(1);
-
-	listen_to_discord(&connection);
-
-	// send the status
-	char* status = malloc(sizeof(status_template) + 41);
-	sprintf(status, status_template, getpid(), nonce++);
-
-	unsigned long status_len = strlen(status);
-
-	frame.header = (MessageFrameHeader){1, status_len};
-	memcpy(frame.message, status, status_len);
-	connection_write(&connection, &frame, sizeof(MessageFrameHeader) + status_len);
-	printf("we just sent the status\n %s\n to discord!!1!\n", status);
-
-	sleep(1);
-	listen_to_discord(&connection);
-
-	sleep(200);
-
-	return 0;
-}
-*/
