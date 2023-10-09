@@ -1,6 +1,6 @@
 # Discord presence for lite-xl
 
-This only works on Linux; if you're on something else, use [litepresence](https://github.com/TorchedSammy/litepresence)
+This only works on Linux; if you're on something else, use [litepresence](https://github.com/TorchedSammy/litepresence).
 
 This plugin displays what file you're editing and your directory in your Discord rich presence.
 
@@ -9,7 +9,7 @@ This plugin displays what file you're editing and your directory in your Discord
 You can customize the RPC messages by setting `config.discord_rpc`. The default config looks like this:
 
 ```lua
-local default_config = {
+local config.discord_rpc = {
     application_id = "749282810971291659",
     editing_details = "Editing %f",
     idle_details = "Idling",
