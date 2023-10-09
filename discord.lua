@@ -1,6 +1,6 @@
 -- mod-version:3
-local socket = require "plugins.discord.discord_socket"
-local json = require "plugins.discord.json"
+local socket = require "plugins.discord-presence.discord_socket"
+local json = require "libraries.json"
 
 
 local discord = {}

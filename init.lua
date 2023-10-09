@@ -5,7 +5,7 @@ local common = require "core.common"
 local command = require "core.command"
 local RootView = require "core.rootview"
 local Object = require "core.object"
-local discord = require "plugins.discord.discord"
+local discord = require "plugins.discord-presence.discord"
 
 -- stolen from https://github.com/TorchedSammy/litepresence/ Copyright (c) 2021 TorchedSammy
 local function makeTbl(tbl)
