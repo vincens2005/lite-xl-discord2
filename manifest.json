@@ -11,7 +11,7 @@
 			},
 			"files": [
 				{
-					"url": "https://github.com/vincens2005/lite-xl-discord2/releases/download/v0.1/discord_socket.so",
+					"url": "https://github.com/vincens2005/lite-xl-discord2/releases/download/v0.2/discord_socket.so",
 					"arch": "x86_64-linux",
 					"checksum": "e0ef605c3057a5717900258814aacfe39d3a84c1c42725ed56ce520386f5fc45"
 				}

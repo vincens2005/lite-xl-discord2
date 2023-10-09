@@ -2,7 +2,6 @@
 local socket = require "plugins.discord-presence.discord_socket"
 local json = require "libraries.json"
 
-
 local discord = {}
 local handlers = {}
 
@@ -75,9 +74,6 @@ function discord.update(new_status)
 			activity = {
 				state = new_status.state,
 				details = new_status.details,
-				timestamps = {
-					start = new_status.start_time,
-				},
 				assets = {
 					large_image = new_status.large_image
 				},
@@ -88,6 +84,12 @@ function discord.update(new_status)
 	}
 	if new_status.small_image ~= nil then
 		message.args.activity.assets.small_image = new_status.small_image
+	end
+
+	if new_status.start_time ~= nil then
+		message.args.activity.timestamps = {
+			start = new_status.start_time,
+		}
 	end
 
 	local message_string = json.encode(message)
