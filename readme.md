@@ -21,3 +21,9 @@ local config.discord_rpc = {
     reconnect = 5
 }
 ```
+
+## a simple discord-rpc implementation in C and lua
+
+`main.c`, `include/discord.h`, and `discord.lua` comprise a basic implementation of `discord-rpc` from scratch. It's not feature-complete, but it is extensible.
+
+If you want to use it for a different project, all you have to do is make small changes to `main.c` to use the standard lua API instead of lite-xl's header, and link lua in compiling it.
